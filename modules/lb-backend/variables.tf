@@ -113,8 +113,10 @@ variable "security_policy" {
 
 variable "domain_host" {
   type = string
+  default = null
 }
 
 variable "path" {
   type = string
+  default = null
 }

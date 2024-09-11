@@ -1,5 +1,5 @@
 module "user_service" {
-  source                        = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=feat%2Fsa-in-cr-v2"
+  source                        = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=cloud_run_lb"
   project_id                    = var.project_id
   location                      = var.region
   service_name                  = var.user_service_service_name
@@ -11,7 +11,7 @@ module "user_service" {
 }
 
 module "catalog_service" {
-  source                        = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=feat%2Fsa-in-cr-v2"
+  source                        = "github.com/q2w/terraform-google-cloud-run//modules/v2?ref=cloud_run_lb"
   project_id                    = var.project_id
   location                      = var.region
   service_name                  = var.catalog_service_service_name
@@ -30,7 +30,7 @@ module "lb_backend_user" {
   name        = "lb-backend-user"
   backend = {
     groups                  = []
-    serverless_neg_backends = [{ region : "us-central1", type : "cloud-run", service : { name : module.user_service.service_name } }]
+    serverless_neg_backends = [module.user_service.serverless_neg_required_input]
     enable_cdn              = false
 
     iap_config = {
@@ -50,7 +50,7 @@ module "lb_backend_catalog" {
   name        = "lb-backend-catalog"
   backend = {
     groups                  = []
-    serverless_neg_backends = [{ region : "us-central1", type : "cloud-run", service : { name : module.catalog_service.service_name } }]
+    serverless_neg_backends = [module.catalog_service.serverless_neg_required_input]
     enable_cdn              = false
 
     iap_config = {
